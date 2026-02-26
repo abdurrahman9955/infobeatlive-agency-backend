@@ -1,0 +1,70 @@
+FROM node:lts-alpine AS builder
+WORKDIR /usr/src/app
+
+RUN apk update && apk add --no-cache \
+    udev \
+    openssl \
+    python3 
+
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+RUN npm run build 
+
+FROM node:lts-alpine AS final
+WORKDIR /usr/src/app
+
+RUN apk update && apk add --no-cache \
+    nss \
+    udev 
+
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+EXPOSE 8080
+CMD ["sh", "-c", "node dist/app.js"]
+
+
+
+
+
+# FROM node:lts-alpine AS builder
+# WORKDIR /usr/src/app
+
+# RUN apk update && apk add --no-cache \
+#     nss \
+#     freetype \
+#     harfbuzz \
+#     ttf-freefont \
+#     udev \
+#     libsecret \
+#     openssl \
+#     python3 \
+#     make \
+#     g++ 
+
+# COPY package*.json ./
+# RUN npm install
+# COPY . .
+
+# RUN npm run build 
+
+# FROM node:lts-alpine AS final
+# WORKDIR /usr/src/app
+
+# RUN apk update && apk add --no-cache \
+#     nss \
+#     freetype \
+#     harfbuzz \
+#     ttf-freefont \
+#     udev \
+#     libsecret 
+
+# COPY --from=builder /usr/src/app/package*.json ./
+# COPY --from=builder /usr/src/app/dist ./dist
+# COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+# EXPOSE 8080
+# CMD ["sh", "-c", "node dist/app.js"]
