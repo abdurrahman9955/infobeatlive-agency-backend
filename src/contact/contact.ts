@@ -1,7 +1,9 @@
 // src/controllers/classContactController.ts
 import { Request, Response, NextFunction } from 'express';
 import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY!); 
+
+const RESEND_API_KEY='re_XwjNRoo1_gyVPt66wQef41cVRhX7MTMLV'
+const resend = new Resend(RESEND_API_KEY); 
 
 async function sendResendOtpMain(fullName:string,businessName:string,country:string,phoneNumber:string,
   email:string,reason:string,statement:string): Promise<void> {

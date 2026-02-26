@@ -57,7 +57,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin === 'https://www.infobeatlive.com' || origin === 'https://infobeatlive.com' || origin === 'http://localhost:3000') {
+  if (origin === 'https://www.infobeatlive.com' || origin === 'https://infobeatlive-agency.vercel.app' || origin === 'http://localhost:3000') {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
@@ -75,9 +75,11 @@ app.use((req, res, next) => {
 app.use(morgan('combined'));
 app.use(cookieParser());
 
+const SESSION_SECRET ='fb243970c6a2d476b4ce1f68c602e65d09f129fedeefb337510e02baf6ea9fcc'
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET! as string,
+    secret: SESSION_SECRET as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -96,7 +98,9 @@ const server = createServer(app);
 app.use('/api/health', routerHealth);
 app.use('/api/contact', contactRouter);
 
-const PORT = process.env.PORT!;
+
+const port=8080
+const PORT = port;
 server.listen(PORT, '0.0.0.0' as any, () => {
   console.log(`Server is running on port ${PORT}`);
 });
